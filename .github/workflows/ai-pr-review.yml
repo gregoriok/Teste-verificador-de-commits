@@ -18,10 +18,10 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install requests openai
+        run: pip install requests google-genai google
 
       - name: Run AI analysis
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GEMINI_KEY: ${{ secrets.GEMINI_KEY }}
         run: python scripts/analyzer.py
