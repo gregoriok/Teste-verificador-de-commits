@@ -1,12 +1,13 @@
 import os
 import requests
-from openai import OpenAI
+from google import genai
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-repo = os.getenv("GITHUB_REPOSITORY")
 token = os.getenv("GITHUB_TOKEN")
+repo = os.getenv("GITHUB_REPOSITORY")
 pr_number = os.getenv("GITHUB_REF").split("/")[-1]
+GEMINI_KEY = os.getenv("GEMINI_KEY")
+client = genai.Client(api_key=GEMINI_KEY)
 
 headers = {
     "Authorization": f"Bearer {token}",
@@ -48,17 +49,19 @@ Tarefas:
 3. Aponte possíveis riscos ou regressões.
 """
 
-response = client.chat.completions.create(
-    model="gpt-4o-mini",
-    messages=[{"role": "user", "content": prompt}],
-)
+response = client.models.generate_content(
+            model="gemini-3-flash-preview",
+            contents=prompt
+        )
 
-analysis = response.choices[0].message.content
-
-# Comentar no PR
-comment_url = pr_url + "/comments"
-requests.post(
+analysis = response.text
+print(analysis)
+comment_url = f"https://api.github.com/repos/{repo}/issues/{pr_number}/comments"
+response = requests.post(
     comment_url,
     headers=headers,
-    json={"body": f"## 🤖 AI PR Analysis\n\n{analysis}"}
+    json={"body": analysis}
 )
+
+print(response.status_code)
+print(response.text)
