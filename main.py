@@ -6,6 +6,9 @@ app = FastAPI()
 def hello():
     return {"message": "hello world"}
 
+@app.post("/users")
+def create_user(name: str):
+    return {"user": name}
 
 if __name__ == "__main__":
     import uvicorn
