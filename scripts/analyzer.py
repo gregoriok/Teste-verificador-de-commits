@@ -24,6 +24,7 @@ headers = {
 
 # Buscar dados do PR
 pr_url = f"https://api.github.com/repos/{repo}/pulls/{pr_number}"
+print(pr_url)
 pr_response = requests.get(pr_url, headers=headers).json()
 
 title = pr_response["title"]
