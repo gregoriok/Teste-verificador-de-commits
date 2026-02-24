@@ -3,6 +3,7 @@ name: AI PR Analyzer
 on:
   pull_request:
     types: [opened, edited, synchronize]
+  workflow_dispatch:
 
 jobs:
   analyze:
