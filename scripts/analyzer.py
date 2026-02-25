@@ -4,7 +4,6 @@ from google import genai
 import json
 from dotenv import load_dotenv
 
-# 👇 carrega .env automaticamente
 load_dotenv()
 token = os.getenv("GITHUB_TOKEN")
 repo = os.getenv("GITHUB_REPOSITORY")
@@ -82,6 +81,3 @@ response = requests.post(
     headers=headers,
     json={"body": analysis}
 )
-
-print(response.status_code)
-print(response.text)
