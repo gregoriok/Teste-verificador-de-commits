@@ -2,11 +2,19 @@ import os
 import requests
 from google import genai
 import json
+from dotenv import load_dotenv
 
+# 👇 carrega .env automaticamente
+load_dotenv()
 token = os.getenv("GITHUB_TOKEN")
 repo = os.getenv("GITHUB_REPOSITORY")
 GEMINI_KEY = os.getenv("GEMINI_KEY")
 client = genai.Client(api_key=GEMINI_KEY)
+
+headers = {
+    "Authorization": f"Bearer {token}",
+    "Accept": "application/vnd.github+json"
+}
 
 if os.getenv("GITHUB_EVENT_PATH"):
     with open(os.environ["GITHUB_EVENT_PATH"]) as f:
@@ -14,13 +22,16 @@ if os.getenv("GITHUB_EVENT_PATH"):
 
     pr_number = event["pull_request"]["number"]
 else:
-    repo = "user/repo"
-    pr_number = 1
+    pulls_url = f"https://api.github.com/repos/{repo}/pulls?state=open&sort=created&direction=desc&per_page=1"
+    pulls_response = requests.get(pulls_url, headers=headers).json()
 
-headers = {
-    "Authorization": f"Bearer {token}",
-    "Accept": "application/vnd.github+json"
-}
+    if not pulls_response:
+        raise Exception("Nenhum PR aberto encontrado")
+
+    pr_number = pulls_response[0]["number"]
+
+    print("Usando PR mais recente:", pr_number)
+
 
 # Buscar dados do PR
 pr_url = f"https://api.github.com/repos/{repo}/pulls/{pr_number}"
