@@ -1,13 +1,21 @@
 import os
 import requests
 from google import genai
-
+import json
 
 token = os.getenv("GITHUB_TOKEN")
 repo = os.getenv("GITHUB_REPOSITORY")
-pr_number = os.getenv("GITHUB_REF").split("/")[-1]
 GEMINI_KEY = os.getenv("GEMINI_KEY")
 client = genai.Client(api_key=GEMINI_KEY)
+
+if os.getenv("GITHUB_EVENT_PATH"):
+    with open(os.environ["GITHUB_EVENT_PATH"]) as f:
+        event = json.load(f)
+
+    pr_number = event["pull_request"]["number"]
+else:
+    repo = "user/repo"
+    pr_number = 1
 
 headers = {
     "Authorization": f"Bearer {token}",
@@ -16,6 +24,7 @@ headers = {
 
 # Buscar dados do PR
 pr_url = f"https://api.github.com/repos/{repo}/pulls/{pr_number}"
+print(pr_url)
 pr_response = requests.get(pr_url, headers=headers).json()
 
 title = pr_response["title"]
