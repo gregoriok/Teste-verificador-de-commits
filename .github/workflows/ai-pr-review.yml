@@ -23,7 +23,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install requests google-genai google
+        run: pip install requests google-genai google python-dotenv
 
       - name: Run AI analysis
         env:
