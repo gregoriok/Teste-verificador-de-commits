@@ -10,6 +10,12 @@ def hello():
 def create_user(name: str):
     return {"user": name}
 
+@app.get("/users")
+def create_user():
+    return {"user": "Teste"}
+
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app,host="localhost", port=8000)
