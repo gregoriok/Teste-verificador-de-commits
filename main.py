@@ -14,6 +14,9 @@ def create_user(name: str):
 def create_user():
     return {"user": "Teste"}
 
+@app.put("/users/{user_id}")
+def update_user(user_id: int, name: str):
+    return {"user":name}
 
 
 if __name__ == "__main__":
